@@ -42,8 +42,16 @@ jobs:
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
-          eb init 'simple arithmetic calculator' --region 'us-east-1'
+          eb init 'simple arithmetic calculator' --region 'us-east-1' --platform 'Node.js' --branch_default 'main' --non-interactive
           eb deploy 'simplearithmeticcalculator-dev'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: 'us-east-1'
+          MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

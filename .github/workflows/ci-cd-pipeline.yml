@@ -26,9 +26,17 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Deploy to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.12 
+      - name: Deploy to AWS Elastic Beanstalk
+        uses: aws-actions/aws-elastic-beanstalk-deploy-action@v1
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: 'arithmetic-calculator' 
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
+          application-name: 'simple arithmetic calculator'
+          environment-name: 'simplearithmeticcalculator-dev'
+          version-label: ${{ github.run_id }}
+          region: 'us-east-1'
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        env:
+          MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}

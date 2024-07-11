@@ -4,8 +4,9 @@ services:
     image: node:20
     volumes:
       - .:/app
+      - /app/node_modules
     working_dir: /app
-    command: npm run start:dev
+    command: bash -c "npm install && npm run clean:all && npm run seed && npm run start:dev"
     ports:
       - 3000:3000
     depends_on:

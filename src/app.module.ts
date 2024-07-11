@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { config } from 'dotenv';
+import { AuthModule } from './auth/auth.module';
+import { OperationsModule } from './operations/operations.module';
+import { RecordsModule } from './records/records.module';
 config();
 
 @Module({
@@ -17,8 +20,11 @@ config();
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
+    ConfigModule.forRoot(),
+    AuthModule,
+    OperationsModule,
+    RecordsModule,
   ],
-  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

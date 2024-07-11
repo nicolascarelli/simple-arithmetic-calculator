@@ -12,4 +12,10 @@ export class Operation extends Base {
 
   @Column('decimal')
   cost: number;
+
+  constructor(type: OperationType, cost: number) {
+    super();
+    this.type = type;
+    this.cost = cost;
+  }
 }

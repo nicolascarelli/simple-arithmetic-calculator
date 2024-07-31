@@ -24,4 +24,9 @@ export class UserService {
     user.balance -= amount;
     return this.usersRepository.save(user);
   }
+
+  async addBalance(user: User, amount: number): Promise<User> {
+    user.balance += amount;
+    return this.usersRepository.save(user);
+  }
 }

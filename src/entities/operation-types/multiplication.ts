@@ -7,6 +7,6 @@ export class Multiplication extends OperationType {
   }
 
   calculate(...args: number[]): Promise<number> {
-    return Promise.resolve(args.reduce((a, b) => a - b));
+    return Promise.resolve(args.reduce((a, b) => a * b));
   }
 }

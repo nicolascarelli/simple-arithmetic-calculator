@@ -53,4 +53,38 @@ export class OperationsService {
       await queryRunner.release();
     }
   }
+
+  async delete(operationId: number, user: User): Promise<void> {
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const operation = await this.operationRepository.findOne({
+        where: { id: operationId },
+      });
+      if (!operation) {
+        throw new Error('Operation not found');
+      }
+
+      const record =
+        await this.recordsService.getRecordByOperationId(operationId);
+      if (!record) {
+        throw new Error('Associated record not found');
+      }
+
+      await this.userService.addBalance(user, operation.cost);
+
+      await this.operationRepository.softDelete(operationId);
+
+      await this.recordsService.deleteRecord(record.id);
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
 }

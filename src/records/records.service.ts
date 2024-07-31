@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Operation } from '../entities/operation.entity';
+import { Repository } from 'typeorm';
 import { Record } from '../entities/record.entity';
 import { User } from '../entities/user.entity';
-import { Repository } from 'typeorm';
+import { Operation } from 'src/entities/operation.entity';
 
 @Injectable()
 export class RecordsService {
@@ -28,26 +28,44 @@ export class RecordsService {
     return this.recordsRepository.save(record);
   }
 
+  async deleteRecord(recordId: number): Promise<void> {
+    await this.recordsRepository.softDelete(recordId);
+  }
+
   async getUserRecords(
     user: User,
-    filter: any,
-    sort: any,
-    pagination: any,
-  ): Promise<Record[]> {
-    let query = this.recordsRepository.createQueryBuilder('record');
+    sort: { field: string; order: 'ASC' | 'DESC' } = {
+      field: 'id',
+      order: 'ASC',
+    },
+    pagination: { page?: number; perPage?: number } = {},
+  ): Promise<{ records: Record[]; totalRecords: number }> {
+    const query = this.recordsRepository
+      .createQueryBuilder('record')
+      .leftJoinAndSelect('record.operation', 'operation')
+      .where('record.deletedAt IS NULL AND  record.user_id = :userId', {
+        userId: user.id,
+      });
 
-    if (filter) {
-      query = query.where({ user: user.id, ...filter });
+    const totalRecords = await query.getCount();
+
+    query.orderBy(`record.${sort.field}`, sort.order);
+
+    if (pagination.page && pagination.perPage) {
+      query
+        .skip((pagination.page - 1) * pagination.perPage)
+        .take(pagination.perPage);
     }
 
-    if (sort) {
-      query = query.orderBy(sort);
-    }
+    const records = await query.getMany();
 
-    if (pagination) {
-      query = query.skip(pagination.skip).take(pagination.take);
-    }
+    return { records, totalRecords };
+  }
 
-    return query.getMany();
+  async getRecordByOperationId(operationId: number): Promise<Record> {
+    return this.recordsRepository.findOne({
+      where: { operation: { id: operationId } },
+      relations: ['operation'],
+    });
   }
 }

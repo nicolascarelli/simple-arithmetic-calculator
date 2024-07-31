@@ -1,7 +1,7 @@
+import { UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UnauthorizedException } from '@nestjs/common';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -27,7 +27,7 @@ describe('AuthController', () => {
 
   it('should return JWT when credentials are valid', async () => {
     const loginDto = { username: 'test', password: 'test' };
-    const mockJwt = { access_token: 'mockJwt' };
+    const mockJwt = { access_token: 'mockJwt', balance: 100 };
     const mockUser = { username: 'test', password: 'test' };
 
     jest.spyOn(authService, 'validateUser').mockResolvedValueOnce(mockUser);

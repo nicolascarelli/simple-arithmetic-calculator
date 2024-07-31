@@ -1,15 +1,17 @@
+import { OperationsService } from './operations.service';
+import { CreateOperationDto } from './operation-create.dto';
 import {
-  Body,
   Controller,
   Post,
+  Body,
   Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
+  Delete,
+  Param,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { OperationsService } from './operations.service';
-import { CreateOperationDto } from './operation-create.dto';
 
 @Controller('v1/operations')
 export class OperationsController {
@@ -21,5 +23,13 @@ export class OperationsController {
   create(@Body() createOperationDto: CreateOperationDto, @Req() req) {
     const record = this.operationService.create(createOperationDto, req.user);
     return record;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async delete(@Param('id') id: string, @Req() req) {
+    const numericId = parseInt(id, 10);
+    await this.operationService.delete(numericId, req.user);
+    return { message: 'Operation deleted successfully' };
   }
 }

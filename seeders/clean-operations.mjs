@@ -11,14 +11,34 @@ const connection = mysql.createConnection({
 });
 
 connection.connect((err) => {
-  if (err) throw err;
+  if (err) {
+    console.error('Error connecting to db:', err);
+    return;
+  }
 
-  const query = 'DELETE FROM record';
+  const checkTableQuery = "SHOW TABLES LIKE 'operation'";
 
-  connection.query(query, (err, result) => {
-    if (err) throw err;
+  connection.query(checkTableQuery, (err, result) => {
+    if (err) {
+      console.error('Error checking table existence:', err);
+      connection.end();
+      return;
+    }
 
-    console.log(`Deleted ${result.affectedRows} row(s).`);
-    connection.end();
+    if (result.length > 0) {
+      const deleteQuery = 'DELETE FROM operation';
+
+      connection.query(deleteQuery, (err, result) => {
+        if (err) {
+          console.error('Error executing delete query:', err);
+        } else {
+          console.log(`Deleted ${result.affectedRows} row(s).`);
+        }
+        connection.end();
+      });
+    } else {
+      console.log('Table "operation" does not exist.');
+      connection.end();
+    }
   });
 });

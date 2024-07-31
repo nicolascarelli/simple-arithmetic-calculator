@@ -26,11 +26,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Publish to GitHub Registry
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build Docker Image
         run: docker build -t ghcr.io/${{ github.repository }}/my-app:${{ github.sha }} .
         

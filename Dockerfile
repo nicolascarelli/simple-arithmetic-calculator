@@ -1,6 +1,4 @@
-# Step 1: Create a Dockerfile
-
-FROM node:14-alpine
+FROM node:16-alpine
 
 WORKDIR /app
 

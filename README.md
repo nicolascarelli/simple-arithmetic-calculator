@@ -41,6 +41,7 @@ MYSQL_HOST=localhost
 SECRET_KEY=mysecretkey
 USER_PASSWORD=userpassword
 USER_USERNAME=username
+USER_BALANCE=70000
 ````
 
 
@@ -59,4 +60,4 @@ The user and the password are set in the .env file.
 
 5. In /api endpoint you ll find the list of endpoints
 
-6. Clarification: There are missing tests, and GET records still needs work
+6. Clarification: There are missing tests, because of lack of time. Existing one can run with npm run test.

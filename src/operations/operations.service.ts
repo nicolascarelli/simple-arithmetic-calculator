@@ -31,7 +31,9 @@ export class OperationsService {
       const operationType = OperationFactory.create(createOperationDto.type);
 
       await this.userService.deductBalance(user, operationType.cost);
-      const result = await operationType.calculate(...createOperationDto.args);
+      const result = await operationType.calculate(
+        ...(createOperationDto.args || []),
+      );
 
       let operation = new Operation(
         createOperationDto.type,

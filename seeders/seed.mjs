@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import mysql from 'mysql';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 dotenv.config();
 
@@ -27,8 +27,12 @@ connection.query(createTableQuery, (err) => {
     return;
   }
 
+  console.log('hashing password');
   bcrypt.hash(process.env.USER_PASSWORD, 10, (err, hashedPassword) => {
-    if (err) throw err;
+    if (err) {
+      console.error('An error occurred:', err);
+      process.exit(1);
+    }
 
     const user = {
       username: process.env.USER_USERNAME,
